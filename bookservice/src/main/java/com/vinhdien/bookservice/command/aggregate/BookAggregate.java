@@ -8,7 +8,11 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.beans.BeanUtils;
 
 import com.vinhdien.bookservice.command.command.CreateBookCommand;
+import com.vinhdien.bookservice.command.command.DeleteBookCommand;
+import com.vinhdien.bookservice.command.command.UpdateBookCommand;
 import com.vinhdien.bookservice.command.event.BookCreatedEvent;
+import com.vinhdien.bookservice.command.event.BookDeleteEvent;
+import com.vinhdien.bookservice.command.event.BookUpdateEvent;
 
 @Aggregate
 public class BookAggregate {
@@ -27,6 +31,20 @@ public class BookAggregate {
 	        AggregateLifecycle.apply(bookCreatedEvent);
 	    }
 	 
+	 @CommandHandler
+	 public void handle(UpdateBookCommand updateBookCommand) {  
+		 BookUpdateEvent bookUpdateEvent = new BookUpdateEvent();
+		 BeanUtils.copyProperties(updateBookCommand,bookUpdateEvent);
+		 AggregateLifecycle.apply(bookUpdateEvent);
+	 }
+	 
+	 @CommandHandler
+	 public void handle(DeleteBookCommand deleteBookCommand) {  
+		 BookDeleteEvent bookDeleteEvent = new BookDeleteEvent();
+		 BeanUtils.copyProperties(deleteBookCommand,bookDeleteEvent);
+		 AggregateLifecycle.apply(bookDeleteEvent);
+	 }
+	 
 	 @EventSourcingHandler
 	    public void on(BookCreatedEvent event) {
 			this.bookId = event.getBookId();
@@ -34,4 +52,12 @@ public class BookAggregate {
 			this.isReady = event.getIsReady();
 			this.name = event.getName();
 	    }
+	 
+	 @EventSourcingHandler
+	 public void on(BookUpdateEvent event) {
+		 this.bookId = event.getBookId();
+		 this.author = event.getAuthor();
+		 this.isReady = event.getIsReady();
+		 this.name = event.getName();
+	 }
 }
