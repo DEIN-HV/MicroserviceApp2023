@@ -1,6 +1,6 @@
 package com.vinhdien.bookservice.command.event;
 
-public class BookCreatedEvent {
+public class BookUpdateEvent {
 	private String bookId;
 	private String name;
 	private String author;
