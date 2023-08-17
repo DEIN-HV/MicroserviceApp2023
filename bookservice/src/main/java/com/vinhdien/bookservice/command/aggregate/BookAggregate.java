@@ -21,43 +21,44 @@ public class BookAggregate {
 	private String name;
 	private String author;
 	private Boolean isReady;
-	
-	 public BookAggregate() {}
-	 
-	 @CommandHandler
-	    public BookAggregate(CreateBookCommand createBookCommand) {  
-	        BookCreatedEvent bookCreatedEvent = new BookCreatedEvent();
-	        BeanUtils.copyProperties(createBookCommand,bookCreatedEvent);
-	        AggregateLifecycle.apply(bookCreatedEvent);
-	    }
-	 
-	 @CommandHandler
-	 public void handle(UpdateBookCommand updateBookCommand) {  
-		 BookUpdateEvent bookUpdateEvent = new BookUpdateEvent();
-		 BeanUtils.copyProperties(updateBookCommand,bookUpdateEvent);
-		 AggregateLifecycle.apply(bookUpdateEvent);
-	 }
-	 
-	 @CommandHandler
-	 public void handle(DeleteBookCommand deleteBookCommand) {  
-		 BookDeleteEvent bookDeleteEvent = new BookDeleteEvent();
-		 BeanUtils.copyProperties(deleteBookCommand,bookDeleteEvent);
-		 AggregateLifecycle.apply(bookDeleteEvent);
-	 }
-	 
-	 @EventSourcingHandler
-	    public void on(BookCreatedEvent event) {
-			this.bookId = event.getBookId();
-			this.author = event.getAuthor();
-			this.isReady = event.getIsReady();
-			this.name = event.getName();
-	    }
-	 
-	 @EventSourcingHandler
-	 public void on(BookUpdateEvent event) {
-		 this.bookId = event.getBookId();
-		 this.author = event.getAuthor();
-		 this.isReady = event.getIsReady();
-		 this.name = event.getName();
-	 }
+
+	public BookAggregate() {
+	}
+
+	@CommandHandler
+	public BookAggregate(CreateBookCommand createBookCommand) {
+		BookCreatedEvent bookCreatedEvent = new BookCreatedEvent();
+		BeanUtils.copyProperties(createBookCommand, bookCreatedEvent);
+		AggregateLifecycle.apply(bookCreatedEvent);
+	}
+
+	@CommandHandler
+	public void handle(UpdateBookCommand updateBookCommand) {
+		BookUpdateEvent bookUpdateEvent = new BookUpdateEvent();
+		BeanUtils.copyProperties(updateBookCommand, bookUpdateEvent);
+		AggregateLifecycle.apply(bookUpdateEvent);
+	}
+
+	@CommandHandler
+	public void handle(DeleteBookCommand deleteBookCommand) {
+		BookDeleteEvent bookDeleteEvent = new BookDeleteEvent();
+		BeanUtils.copyProperties(deleteBookCommand, bookDeleteEvent);
+		AggregateLifecycle.apply(bookDeleteEvent);
+	}
+
+	@EventSourcingHandler
+	public void on(BookCreatedEvent event) {
+		this.bookId = event.getBookId();
+		this.author = event.getAuthor();
+		this.isReady = event.getIsReady();
+		this.name = event.getName();
+	}
+
+	@EventSourcingHandler
+	public void on(BookUpdateEvent event) {
+		this.bookId = event.getBookId();
+		this.author = event.getAuthor();
+		this.isReady = event.getIsReady();
+		this.name = event.getName();
+	}
 }

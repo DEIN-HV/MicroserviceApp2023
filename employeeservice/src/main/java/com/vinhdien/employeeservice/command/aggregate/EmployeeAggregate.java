@@ -8,7 +8,11 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.beans.BeanUtils;
 
 import com.vinhdien.employeeservice.command.command.CreateEmployeeCommand;
+import com.vinhdien.employeeservice.command.command.DeleteEmployeeCommand;
+import com.vinhdien.employeeservice.command.command.UpdateEmployeeCommand;
 import com.vinhdien.employeeservice.command.event.EmployeeCreatedEvent;
+import com.vinhdien.employeeservice.command.event.EmployeeDeleteEvent;
+import com.vinhdien.employeeservice.command.event.EmployeeUpdateEvent;
 
 @Aggregate
 public class EmployeeAggregate {
@@ -20,9 +24,26 @@ public class EmployeeAggregate {
     private String kin;
     private Boolean isDisciplined;
 
+    public EmployeeAggregate() {
+    }
+
     @CommandHandler
     public EmployeeAggregate(CreateEmployeeCommand command) {
         EmployeeCreatedEvent event = new EmployeeCreatedEvent();
+        BeanUtils.copyProperties(command, event);
+        AggregateLifecycle.apply(event);
+    }
+
+    @CommandHandler
+    public void handle(UpdateEmployeeCommand command) {
+        EmployeeUpdateEvent event = new EmployeeUpdateEvent();
+        BeanUtils.copyProperties(command, event);
+        AggregateLifecycle.apply(event);
+    }
+
+    @CommandHandler
+    public void handle(DeleteEmployeeCommand command) {
+        EmployeeDeleteEvent event = new EmployeeDeleteEvent();
         BeanUtils.copyProperties(command, event);
         AggregateLifecycle.apply(event);
     }
@@ -34,6 +55,20 @@ public class EmployeeAggregate {
         this.lastName = event.getLastName();
         this.kin = event.getKin();
         this.isDisciplined = event.getIsDisciplined();
+    }
+
+    @EventSourcingHandler
+    public void on(EmployeeUpdateEvent event) {
+        this.employeeId = event.getEmployeeId();
+        this.firstName = event.getFirstName();
+        this.lastName = event.getLastName();
+        this.kin = event.getKin();
+        this.isDisciplined = event.getIsDisciplined();
+    }
+
+    @EventSourcingHandler
+    public void on(EmployeeDeleteEvent event) {
+        this.employeeId = event.getEmployeeId();
     }
 
 }

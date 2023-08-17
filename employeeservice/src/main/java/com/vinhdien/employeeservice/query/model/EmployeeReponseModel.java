@@ -1,24 +1,11 @@
-package com.vinhdien.employeeservice.command.command;
+package com.vinhdien.employeeservice.query.model;
 
-import org.axonframework.modelling.command.TargetAggregateIdentifier;
-
-public class UpdateEmployeeCommand {
-    @TargetAggregateIdentifier
+public class EmployeeReponseModel {
     private String employeeId;
     private String firstName;
     private String lastName;
     private String kin;
     private Boolean isDisciplined;
-
-    public UpdateEmployeeCommand(String employeeId, String firstName, String lastName, String kin,
-            Boolean isDisciplined) {
-        super();
-        this.employeeId = employeeId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.kin = kin;
-        this.isDisciplined = isDisciplined;
-    }
 
     public String getEmployeeId() {
         return employeeId;
