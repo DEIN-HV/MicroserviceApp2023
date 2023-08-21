@@ -1,5 +1,7 @@
 package com.vinhdien.employeeservice.query.controller;
 
+import java.util.List;
+
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vinhdien.employeeservice.query.model.EmployeeReponseModel;
+import com.vinhdien.employeeservice.query.queries.GetAllEmployeeQuery;
 import com.vinhdien.employeeservice.query.queries.GetEmployeesQuery;
 
 @RestController
@@ -28,5 +31,16 @@ public class EmployeeQueryController {
                 ResponseTypes.instanceOf(EmployeeReponseModel.class))
                 .join();
         return employeeReponseModel;
+    }
+    
+    @GetMapping
+    public List<EmployeeReponseModel> getAllEmployee() {
+    	
+    	GetAllEmployeeQuery getallAllEmployeeQuery = new GetAllEmployeeQuery();
+    	
+    	List<EmployeeReponseModel> modelList = queryGateway.query(getallAllEmployeeQuery,
+    			ResponseTypes.multipleInstancesOf(EmployeeReponseModel.class))
+    			.join();
+    	return modelList;
     }
 }

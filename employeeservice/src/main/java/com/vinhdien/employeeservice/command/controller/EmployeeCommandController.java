@@ -18,7 +18,7 @@ import com.vinhdien.employeeservice.command.command.UpdateEmployeeCommand;
 import com.vinhdien.employeeservice.command.model.EmployeeRequestModel;
 
 @RestController
-@RequestMapping("/api/v1/emplopyees")
+@RequestMapping("/api/v1/employees")
 public class EmployeeCommandController {
 
     @Autowired
