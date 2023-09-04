@@ -28,9 +28,9 @@ public class EmployeeCommandController {
 
     @Autowired
     private CommandGateway commandGateway;
-    
-	@Autowired
-	private MessageChannel output;
+//    
+//	@Autowired
+//	private MessageChannel output;
 
     @PostMapping
     public String addEmployee(@RequestBody EmployeeRequestModel model) {
