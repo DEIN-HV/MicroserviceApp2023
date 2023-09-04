@@ -13,6 +13,8 @@ import com.vinhdien.bookservice.command.command.UpdateBookCommand;
 import com.vinhdien.bookservice.command.event.BookCreatedEvent;
 import com.vinhdien.bookservice.command.event.BookDeleteEvent;
 import com.vinhdien.bookservice.command.event.BookUpdateEvent;
+import com.vinhdien.commonservice.command.UpdateStatusBookCommand;
+import com.vinhdien.commonservice.event.BookUpdateStatusEvent;
 
 @Aggregate
 public class BookAggregate {
@@ -60,5 +62,18 @@ public class BookAggregate {
 		this.author = event.getAuthor();
 		this.isReady = event.getIsReady();
 		this.name = event.getName();
+	}
+
+	@CommandHandler
+	public void handle(UpdateStatusBookCommand command) {
+		BookUpdateStatusEvent event = new BookUpdateStatusEvent();
+		BeanUtils.copyProperties(command, event);
+		AggregateLifecycle.apply(event);
+	}
+
+	@EventSourcingHandler
+	public void on(BookUpdateStatusEvent event) {
+		this.bookId = event.getBookId();
+		this.isReady = event.getIsReady();
 	}
 }
