@@ -1,5 +1,6 @@
 package com.vinhdien.borrowingservice.command.controller;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vinhdien.borrowingservice.command.command.CreateBorrowCommand;
 import com.vinhdien.borrowingservice.command.command.UpdateBookReturnCommand;
 import com.vinhdien.borrowingservice.command.model.BorrowRequestModel;
+import com.vinhdien.borrowingservice.command.service.BorrowService;
 
 @RestController
 @RequestMapping("/api/v1/borrowing")
@@ -20,6 +22,9 @@ public class BorrowCommandController {
 
 	@Autowired
 	private CommandGateway commandGateway;
+
+	@Autowired
+	private BorrowService borrowService;
 
 	@PostMapping
 	public String addBorrowing(@RequestBody BorrowRequestModel model) {

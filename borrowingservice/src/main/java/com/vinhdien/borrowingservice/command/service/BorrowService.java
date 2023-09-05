@@ -10,8 +10,8 @@ public class BorrowService {
 	@Autowired
 	BorrowRepository borrowRepository;
 
-//	public String findIdBorrowing(String employeeId, String bookId) {
-//
-//		return borrowRepository.findByEmployeeIdAndBookIdAndReturnDateIsNull(employeeId, bookId).getId();
-//	}
+	public String findIdBorrowing(String employeeId, String bookId) {
+
+		return borrowRepository.findByEmployeeIdAndBookIdAndReturnDateIsNull(employeeId, bookId).getId();
+	}
 }
