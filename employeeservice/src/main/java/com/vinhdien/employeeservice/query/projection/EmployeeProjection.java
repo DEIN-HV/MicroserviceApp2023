@@ -28,16 +28,25 @@ public class EmployeeProjection {
 
         return model;
     }
-    
+
     @QueryHandler
     public List<EmployeeReponseModel> handle(GetAllEmployeeQuery getallAllEmployeeQuery) {
-    	List<EmployeeReponseModel> modelList = new ArrayList<>();
-    	List<Employee> list = employeeRepository.findAll();
-    	list.forEach(s -> {
-    		EmployeeReponseModel model = new EmployeeReponseModel();
-    		BeanUtils.copyProperties(s, model);
-    		modelList.add(model);
-    	});	
-    	return modelList;
+        List<EmployeeReponseModel> modelList = new ArrayList<>();
+        List<Employee> list = employeeRepository.findAll();
+        list.forEach(s -> {
+            EmployeeReponseModel model = new EmployeeReponseModel();
+            BeanUtils.copyProperties(s, model);
+            modelList.add(model);
+        });
+        return modelList;
     }
+
+    // @QueryHandler
+    // public EmployeeResponseCommonModel handle(GetDetailsEmployeeQuery getDetailsEmployeeQuery) {
+	// 	EmployeeResponseCommonModel model = new EmployeeResponseCommonModel();
+	//  Employee employee = employeeRepository.getById(getDetailsEmployeeQuery.getEmployeeId());
+    //   BeanUtils.copyProperties(employee, model);
+
+    //     return model;
+    // }
 }
