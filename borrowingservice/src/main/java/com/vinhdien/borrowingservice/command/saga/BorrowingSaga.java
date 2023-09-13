@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vinhdien.borrowingservice.command.command.DeleteBorrowCommand;
 import com.vinhdien.borrowingservice.command.command.SendMessageCommand;
 import com.vinhdien.borrowingservice.command.event.BorrowCreatedEvent;
+import com.vinhdien.borrowingservice.command.event.BorrowingUpdateBookReturnEvent;
 import com.vinhdien.borrowingservice.command.model.EmployeeResponseCommonModel;
 import com.vinhdien.commonservice.command.RollBackStatusBookCommand;
 import com.vinhdien.commonservice.command.UpdateStatusBookCommand;
+import com.vinhdien.commonservice.event.BookRollBackStatusEvent;
 import com.vinhdien.commonservice.event.BookUpdateStatusEvent;
 import com.vinhdien.commonservice.model.BookResponseCommonModel;
 import com.vinhdien.commonservice.query.GetDetailsBookQuery;
@@ -80,13 +82,39 @@ public class BorrowingSaga {
 		}
 	}
 
+	// Rollback book status
 	private void rollBackBookStatus(String bookId, String employeeId, String borrowId) {
 		SagaLifecycle.associateWith("bookId", bookId);
 		RollBackStatusBookCommand command = new RollBackStatusBookCommand(bookId, true, employeeId, borrowId);
 		commandGateway.sendAndWait(command);
 	}
 
+	@SagaEventHandler(associationProperty = "bookId")
+	public void handleRollBackBookStatus(BookRollBackStatusEvent event) {
+		System.out.println("BookRollBackStatusEvent in Saga for book Id : {} " + event.getBookId());
+		rollBackBorrowRecord(event.getBorrowId());
+	}
+
+	// Rollback borrow record
 	private void rollBackBorrowRecord(String id) {
 		commandGateway.sendAndWait(new DeleteBorrowCommand(id));
+	}
+
+	// update book status and send notification
+	@StartSaga
+	@SagaEventHandler(associationProperty = "id")
+	private void handle(BorrowingUpdateBookReturnEvent event) {
+		System.out.println("BorrowingUpdateBookReturnEvent in Saga for borrowing Id : " + event.getId());
+		try {
+			UpdateStatusBookCommand command = new UpdateStatusBookCommand(event.getBookId(), true, event.getEmployee(),
+					event.getId());
+			commandGateway.sendAndWait(command);
+			commandGateway.sendAndWait(
+					new SendMessageCommand(event.getId(), event.getEmployee(), "Da tra sach thanh cong !"));
+			SagaLifecycle.end();
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
 	}
 }

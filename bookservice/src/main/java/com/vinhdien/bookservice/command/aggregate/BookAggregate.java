@@ -13,7 +13,9 @@ import com.vinhdien.bookservice.command.command.UpdateBookCommand;
 import com.vinhdien.bookservice.command.event.BookCreatedEvent;
 import com.vinhdien.bookservice.command.event.BookDeleteEvent;
 import com.vinhdien.bookservice.command.event.BookUpdateEvent;
+import com.vinhdien.commonservice.command.RollBackStatusBookCommand;
 import com.vinhdien.commonservice.command.UpdateStatusBookCommand;
+import com.vinhdien.commonservice.event.BookRollBackStatusEvent;
 import com.vinhdien.commonservice.event.BookUpdateStatusEvent;
 
 @Aggregate
@@ -73,6 +75,19 @@ public class BookAggregate {
 
 	@EventSourcingHandler
 	public void on(BookUpdateStatusEvent event) {
+		this.bookId = event.getBookId();
+		this.isReady = event.getIsReady();
+	}
+
+	@CommandHandler
+	public void handle(RollBackStatusBookCommand command) {
+		BookRollBackStatusEvent event = new BookRollBackStatusEvent();
+		BeanUtils.copyProperties(command, event);
+		AggregateLifecycle.apply(event);
+	}
+
+	@EventSourcingHandler
+	public void on(BookRollBackStatusEvent event) {
 		this.bookId = event.getBookId();
 		this.isReady = event.getIsReady();
 	}
